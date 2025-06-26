@@ -12,7 +12,9 @@ const KINTONE_DOMAIN = 'vez7o26y38rb.cybozu.com';
 const KINTONE_API_TOKEN = 'SNjXj0CGity20DNSsiJgImu2fj0WIEWyeHvVbyHe';
 const KINTONE_APP_ID = '1586';
 
-app.use(cors());
+app.use(cors({
+    origin: 'https://ggpcapplicationform.netlify.app'
+}));
 app.use(express.json());
 
 app.post('/apply', upload.single('resume'), async (req, res) => {
