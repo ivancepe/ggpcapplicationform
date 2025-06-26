@@ -208,7 +208,7 @@
         formData.append('availability', availability);
 
         // Check for duplicate name before submitting
-        const checkRes = await fetch('http://localhost:3000/check-name', {
+        const checkRes = await fetch('https://ggpcapplicationform.onrender.com/check-name', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name })
@@ -226,7 +226,7 @@
             return;
         }
 
-        const response = await fetch('http://localhost:3000/apply', {
+        const response = await fetch('https://ggpcapplicationform.onrender.com', {
             method: 'POST',
             body: formData
         });
