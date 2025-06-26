@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GKG | Application Form</title>
+    <link rel="icon" type="image/x-icon" href="images/gkg.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: none;
+        }
+        @media (min-width: 1024px) {
+            .form-scroll {
+                max-height: 100vh;
+                overflow-y: auto;
+                direction: rtl; /* Move scrollbar to the left */
+            }
+            .form-scroll > * {
+                direction: ltr; /* Keep content left-to-right */
+            }
+        }
+        /* Modern scrollbar styles */
+        .form-scroll::-webkit-scrollbar {
+            width: 10px;
+            left: 0;
+        }
+        .form-scroll::-webkit-scrollbar-thumb {
+            background: #1E90FF;
+            border-radius: 8px;
+        }
+        .form-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 8px;
+        }
+        .form-scroll {
+            scrollbar-width: thin;
+            scrollbar-color: #1E90FF #f1f1f1;
+        }
+    </style>
+</head>
+<body class="min-h-screen font-sans">
+    <div class="flex flex-col lg:flex-row h-screen w-full">
+        <!-- Left: Form (60% on desktop) -->
+        <div class="w-full lg:w-[53%] h-screen flex flex-col items-center justify-start form-scroll pt-2 lg:pt-4 overflow-y-auto">
+            <form id="applicationForm" class="w-full max-w-3xl backdrop-blur-lg p-8 rounded-2xl shadow-xl border border-gray-200 space-y-6">
+                <div class="text-center mb-2">
+                    <h2 class="text-3xl font-bold mb-2 tracking-tight">Apply for a Position</h2>
+                    <p class="text-gray-500 text-base">Join our team and grow your career!</p>
+                </div>
+                <div>
+                    <label for="name" class="block text-gray-700 font-semibold mb-1">Full Name</label>
+                    <input type="text" id="name" name="name" required
+                        class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1E90FF] focus:border-[#1E90FF] transition placeholder:text-gray-400"
+                        placeholder="Enter your full name" />
+                </div>
+                <div>
+                    <label for="birthdate" class="block text-gray-700 font-semibold mb-1">Birthdate</label>
+                    <input type="date" id="birthdate" name="birthdate" required
+                        class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1E90FF] focus:border-[#1E90FF] transition placeholder:text-gray-400" />
+                </div>
+                <div>
+                    <label for="phone" class="block text-gray-700 font-semibold mb-1">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" required
+                        class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1E90FF] focus:border-[#1E90FF] transition placeholder:text-gray-400"
+                        placeholder="Enter your phone number" />
+                </div>
+                <div>
+                    <label for="email" class="block text-gray-700 font-semibold mb-1">Email Address</label>
+                    <input type="email" id="email" name="email" required
+                        class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1E90FF] focus:border-[#1E90FF] transition placeholder:text-gray-400"
+                        placeholder="Enter your email address" />
+                </div>
+                <div>
+                    <label for="address" class="block text-gray-700 font-semibold mb-1">Home Address</label>
+                    <input type="text" id="address" name="address" required
+                        class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1E90FF] focus:border-[#1E90FF] transition placeholder:text-gray-400"
+                        placeholder="Enter your home address" />
+                </div>
+                <div>
+                    <label for="position" class="block text-gray-700 font-semibold mb-1">Position</label>
+                    <select id="position" name="position" required
+                        class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1E90FF] focus:border-[#1E90FF] transition bg-white text-gray-700">
+                        <option value="" disabled selected>Select a position</option>
+                        <option>System Developer</option>
+                        <option>Industrial Engineer</option>
+                        <option>Design Staff</option>
+                        <option>Maintenance Engineer</option>
+                        <option>Maintenance Technician</option>
+                        <option>CNC Technician</option>
+                        <option>Mold Maintenance Staff</option>
+                        <option>IT Staff</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="education" class="block text-gray-700 font-semibold mb-1">Educational Attainment</label>
+                    <select id="education" name="education" required
+                        class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1E90FF] focus:border-[#1E90FF] transition bg-white text-gray-700">
+                        <option value="" disabled selected>Select your education</option>
+                        <option>Highschool</option>
+                        <option>Vocational</option>
+                        <option>Associate</option>
+                        <option>Bachelor</option>
+                        <option>Master</option>
+                        <option>Doctorate</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="course" class="block text-gray-700 font-semibold mb-1">Course</label>
+                    <input type="text" id="course" name="course" required
+                        class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1E90FF] focus:border-[#1E90FF] transition placeholder:text-gray-400"
+                        placeholder="Enter your course" />
+                </div>
+                <div>
+                    <label for="expectedSalary" class="block text-gray-700 font-semibold mb-1">Expected Salary</label>
+                    <input type="number" id="expectedSalary" name="expectedSalary" required
+                        class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1E90FF] focus:border-[#1E90FF] transition placeholder:text-gray-400"
+                        placeholder="Enter your expected salary" />
+                </div>
+                <div>
+                    <label for="availability" class="block text-gray-700 font-semibold mb-1">Date of Availability (Phone Screening)</label>
+                    <textarea id="availability" name="availability" required
+                        rows="3"
+                        class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1E90FF] focus:border-[#1E90FF] transition placeholder:text-gray-400 resize-y"
+                        placeholder="Enter your date of availability"></textarea>
+                </div>
+                <div>
+                    <label for="resume" class="block text-gray-700 font-semibold mb-1">Resume <span class="text-gray-400 text-xs">(PDF only)</span></label>
+                    <input type="file" id="resume" name="resume" accept=".pdf,application/pdf" required
+                        class="w-full px-4 py-3 border border-gray-200 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#1E90FF] focus:border-[#1E90FF] transition file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:bg-gray-100 file:text-gray-700" />
+                </div>
+                <button type="submit"
+                    class="w-full bg-gradient-to-r from-[#1E90FF] to-blue-700 text-white py-3 rounded-lg font-bold shadow hover:from-blue-700 hover:to-[#1E90FF] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#1E90FF] focus:ring-offset-2">
+                    Submit Application
+                </button>
+            </form>
+        </div>
+        <!-- Right: Logo area and Illustration (35% on desktop) -->
+        <div class="hidden lg:flex w-[47%] flex-col items-center justify-center bg-white relative text-center">
+            <!-- Logo area -->
+            <div class="flex flex-col items-center">
+                <img src="images/GGPC logo.png" alt="Company Logo" class="h-35 w-80 object-contain" />
+            </div>
+            <!-- Illustration -->
+            <div class="flex flex-col items-center justify-center w-full">
+                <img src="images/Co-workers-rafiki.svg" alt="Flat Vector Illustration"
+                    class="max-w-[95%] max-h-[70vh] object-contain mx-auto" />
+            </div>
+        </div>
+    </div>
+    <!-- Success and Failed Messages -->
+    <div id="successMessage" class="fixed top-8 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg text-lg font-semibold opacity-0 pointer-events-none transition-opacity duration-500 z-50">
+        Application submitted successfully!
+    </div>
+    <div id="failedMessage" class="fixed top-20 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg text-lg font-semibold opacity-0 pointer-events-none transition-opacity duration-500 z-50">
+        A record with this name already exists.
+    </div>
+    <script>
+    document.getElementById('applicationForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const name = document.getElementById('name').value;
+        const birthdate = document.getElementById('birthdate').value;
+        const position = document.getElementById('position').value;
+        const phone = document.getElementById('phone').value;
+        const email = document.getElementById('email').value;
+        const fileInput = document.getElementById('resume');
+        const file = fileInput.files[0];
+        const address = document.getElementById('address').value;
+        const education = document.getElementById('education').value;
+        const course = document.getElementById('course').value;
+        const expectedSalary = document.getElementById('expectedSalary').value;
+        const availability = document.getElementById('availability').value;
+
+        // Auto-calculate age from birthdate
+        function calculateAge(birthdateStr) {
+            const today = new Date();
+            const birthDate = new Date(birthdateStr);
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const m = today.getMonth() - birthDate.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            return age;
+        }
+        const age = calculateAge(birthdate);
+
+        if (!file) {
+            alert('Please select a file.');
+            return;
+        }
+        if (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith('.pdf')) {
+            alert('Only PDF files are allowed for the resume.');
+            return;
+        }
+        const formData = new FormData();
+        formData.append('name', name);
+        formData.append('birthdate', birthdate);
+        formData.append('age', age); // <-- Auto-calculated age
+        formData.append('position', position);
+        formData.append('phone', phone);
+        formData.append('email', email);
+        formData.append('resume', file);
+        formData.append('address', address);
+        formData.append('education', education);
+        formData.append('course', course);
+        formData.append('expectedSalary', expectedSalary);
+        formData.append('availability', availability);
+
+        // Check for duplicate name before submitting
+        const checkRes = await fetch('http://localhost:3000/check-name', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name })
+        });
+        const checkData = await checkRes.json();
+        if (checkData.exists) {
+            // Show animated failed message
+            const failMsg = document.getElementById('failedMessage');
+            failMsg.style.opacity = '1';
+            failMsg.style.pointerEvents = 'auto';
+            setTimeout(() => {
+                failMsg.style.opacity = '0';
+                failMsg.style.pointerEvents = 'none';
+            }, 2000); // visible for 2 seconds
+            return;
+        }
+
+        const response = await fetch('http://localhost:3000/apply', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (response.ok) {
+            // Show animated success message
+            const msg = document.getElementById('successMessage');
+            msg.style.opacity = '1';
+            msg.style.pointerEvents = 'auto';
+            setTimeout(() => {
+                msg.style.opacity = '0';
+                msg.style.pointerEvents = 'none';
+            }, 2000); // visible for 2 seconds
+
+            document.getElementById('applicationForm').reset();
+        } else {
+            alert('Failed to submit application.');
+        }
+    });
+    </script>
+</body>
+</html>
