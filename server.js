@@ -141,6 +141,9 @@ app.post('/check-name', async (req, res) => {
         res.status(500).json({ error: 'Server error' });
     }
 });
+app.get('/health', (req, res) => {
+  res.send('OK');
+});
 
 app.listen(3000, () => {
     console.log('Proxy server running on https://ggpcapplicationform.onrender.com');
