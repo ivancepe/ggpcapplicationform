@@ -9,6 +9,67 @@
     <style>
         body {
             background: none;
+            transition: background 0.3s, color 0.3s;
+        }
+        .dark body {
+            background: #181f2a;
+            color: #e5e7eb;
+        }
+        .dark .backdrop-blur-lg {
+            background-color: rgba(30, 41, 59, 0.7) !important;
+            border-color: #334155 !important;
+        }
+        .dark input,
+        .dark select,
+        .dark textarea {
+            background-color: #232b3a !important;
+            color: #e5e7eb !important;
+            border-color: #334155 !important;
+        }
+        /* Force autofill fields to use dark backgrounds in dark mode */
+        .dark input:-webkit-autofill,
+        .dark select:-webkit-autofill,
+        .dark textarea:-webkit-autofill {
+            -webkit-box-shadow: 0 0 0 1000px #232b3a inset !important;
+            -webkit-text-fill-color: #e5e7eb !important;
+            caret-color: #e5e7eb !important;
+            transition: background-color 9999s ease-in-out 0s;
+        }
+        .dark label {
+            color: #cbd5e1 !important;
+        }
+        .dark .text-gray-700 {
+            color: #e5e7eb !important;
+        }
+        .dark .text-gray-500 {
+            color: #94a3b8 !important;
+        }
+        .dark .bg-white {
+            background-color: #232b3a !important;
+        }
+        .dark .border-gray-200 {
+            border-color: #334155 !important;
+        }
+        .dark .shadow-xl {
+            box-shadow: 0 10px 40px 0 rgba(30,41,59,0.5) !important;
+        }
+        .dark .bg-gradient-to-r {
+            background-image: linear-gradient(to right, #1E90FF, #334155) !important;
+        }
+        .dark .file\:bg-gray-100 {
+            background-color: #334155 !important;
+        }
+        .dark .file\:text-gray-700 {
+            color: #e5e7eb !important;
+        }
+        .dark .bg-green-500 {
+            background-color: #22c55e !important;
+        }
+        .dark .bg-red-500 {
+            background-color: #ef4444 !important;
+        }
+        .dark .bg-black {
+            background-color: #181f2a !important;
         }
         @media (min-width: 1024px) {
             .form-scroll {
@@ -37,17 +98,38 @@
             scrollbar-width: thin;
             scrollbar-color: #1E90FF #f1f1f1;
         }
+        /* Floating particles animation */
+        #particles-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
     </style>
 </head>
-<body class="min-h-screen font-sans">
-    <div class="flex flex-col lg:flex-row h-screen w-full">
-        <!-- Left: Form (60% on desktop) -->
-        <div class="w-full lg:w-[53%] h-screen flex flex-col items-center justify-start form-scroll pt-2 lg:pt-4 overflow-y-auto">
+<body class="min-h-screen font-sans transition-colors duration-300">
+    <!-- Floating Particles Background -->
+    <canvas id="particles-bg"></canvas>
+    <!-- Navigation Bar -->
+    <nav class="w-full bg-white shadow-md fixed top-0 left-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+            <!-- Logo Left -->
+            <div class="flex items-center space-x-3">
+                <img src="images/GGPC logo.png" alt="Company Logo" class="h-10 w-auto object-contain" />
+            </div>
+            <!-- Navigation Links Right -->
+            <div class="flex items-center space-x-8">
+                <a href="#" class="text-gray-700 hover:text-[#1E90FF] font-semibold transition">GGPC Website</a>
+                <a href="#" class="text-gray-700 hover:text-[#1E90FF] font-semibold transition">Pre-employment Examination</a>
+            </div>
+        </div>
+    </nav>
+    <div class="flex flex-col h-screen w-full pt-16">
+        <!-- Left: Form (now full width on desktop) -->
+        <div class="w-full h-screen flex flex-col items-center justify-start form-scroll pt-2 lg:pt-4 overflow-y-auto">
             <form id="applicationForm" class="w-full max-w-3xl backdrop-blur-lg p-8 rounded-2xl shadow-xl border border-gray-200 space-y-6">
-                <div class="text-center mb-2">
-                    <h2 class="text-3xl font-bold mb-2 tracking-tight">Apply for a Position</h2>
-                    <p class="text-gray-500 text-base">Join our team and grow your career!</p>
-                </div>
+                <h2 class="text-3xl font-bold text-center mb-4 tracking-tight">Application Form</h2>
+                <p class="text-gray-500 text-base text-center mb-6">Please fill out the form below to apply for a position at our company.</p>  
                 <div>
                     <label for="name" class="block text-gray-700 font-semibold mb-1">Full Name</label>
                     <input type="text" id="name" name="name" required
@@ -135,18 +217,6 @@
                 </button>
             </form>
         </div>
-        <!-- Right: Logo area and Illustration (35% on desktop) -->
-        <div class="hidden lg:flex w-[47%] flex-col items-center justify-center bg-white relative text-center">
-            <!-- Logo area -->
-            <div class="flex flex-col items-center">
-                <img src="images/GGPC logo.png" alt="Company Logo" class="h-35 w-80 object-contain" />
-            </div>
-            <!-- Illustration -->
-            <div class="flex flex-col items-center justify-center w-full">
-                <img src="images/Co-workers-rafiki.svg" alt="Flat Vector Illustration"
-                    class="max-w-[95%] max-h-[70vh] object-contain mx-auto" />
-            </div>
-        </div>
     </div>
     <!-- Success and Failed Messages -->
     <div id="successMessage" class="fixed top-8 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg text-lg font-semibold opacity-0 pointer-events-none transition-opacity duration-500 z-50">
@@ -162,6 +232,15 @@
             <div class="text-white text-xl font-bold">Submitting... 🚀</div>
         </div>
     </div>
+    <button id="darkModeToggle" class="fixed bottom-6 right-6 z-50 bg-white dark:bg-[#232b3a] border border-gray-200 dark:border-[#334155] rounded-full shadow-lg p-3 hover:bg-gray-100 dark:hover:bg-[#334155] transition">
+        <svg id="sunIcon" class="w-6 h-6 text-[#1E90FF]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="display:none;">
+            <circle cx="12" cy="12" r="5" stroke="currentColor"/>
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 1v2m0 18v2m11-11h-2M3 12H1m16.95 7.07l-1.41-1.41M6.34 6.34L4.93 4.93m12.02 0l-1.41 1.41M6.34 17.66l-1.41 1.41"/>
+        </svg>
+        <svg id="moonIcon" class="w-6 h-6 text-[#1E90FF]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="display:none;">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1111.21 3a7 7 0 109.79 9.79z"/>
+        </svg>
+    </button>
     <script>
     document.getElementById('applicationForm').addEventListener('submit', async function(e) {
         e.preventDefault();
@@ -266,6 +345,91 @@
             alert('Failed to submit application.');
         }
     });
+
+    // Floating Particles Animation
+    const canvas = document.getElementById('particles-bg');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function createParticles() {
+        particles = [];
+        const count = Math.floor(window.innerWidth / 30);
+        for (let i = 0; i < count; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                r: Math.random() * 2 + 1,
+                dx: (Math.random() - 0.5) * 0.5,
+                dy: (Math.random() - 0.5) * 0.5,
+                alpha: Math.random() * 0.5 + 0.3
+            });
+        }
+    }
+    createParticles();
+    window.addEventListener('resize', createParticles);
+
+    function animateParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let p of particles) {
+            ctx.save();
+            ctx.globalAlpha = p.alpha;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r, 0, 2 * Math.PI);
+            ctx.fillStyle = "#1E90FF";
+            ctx.shadowColor = "#1E90FF";
+            ctx.shadowBlur = 8;
+            ctx.fill();
+            ctx.restore();
+
+            p.x += p.dx;
+            p.y += p.dy;
+
+            // Wrap around edges
+            if (p.x < 0) p.x = canvas.width;
+            if (p.x > canvas.width) p.x = 0;
+            if (p.y < 0) p.y = canvas.height;
+            if (p.y > canvas.height) p.y = 0;
+        }
+        requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+
+    // Dark Mode Toggle
+    const darkToggle = document.getElementById('darkModeToggle');
+    const html = document.documentElement;
+    // Load preference
+    if (localStorage.getItem('theme') === 'dark' || 
+        (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        html.classList.add('dark');
+    }
+    function updateDarkModeIcons() {
+        const isDark = html.classList.contains('dark');
+        document.getElementById('sunIcon').style.display = isDark ? '' : 'none';
+        document.getElementById('moonIcon').style.display = isDark ? 'none' : '';
+    }
+
+    // Initial icon state
+    updateDarkModeIcons();
+
+    darkToggle.addEventListener('click', () => {
+        html.classList.toggle('dark');
+        if (html.classList.contains('dark')) {
+            localStorage.setItem('theme', 'dark');
+        } else {
+            localStorage.setItem('theme', 'light');
+        }
+        updateDarkModeIcons();
+    });
+
+    // Also update on page load if theme is set
+    updateDarkModeIcons();
     </script>
 </body>
 </html>
