@@ -162,7 +162,8 @@ app.post('/check-name', async (req, res) => {
                 const recPosition = rec.Position?.value || '';
                 if (recName === name && recEmail === email && recPosition === position) {
                     sameNameAndEmail = true;
-                } else if (recName === name && recEmail === email && recPosition !== position) {
+                    // If exact match, do not allow as different position
+                } else if (!sameNameAndEmail && recName === name && recEmail === email && recPosition !== position) {
                     sameNameEmailDifferentPosition = true;
                 } else if (recEmail === email && recName !== name) {
                     sameEmailDifferentName = true;
