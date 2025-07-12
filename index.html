@@ -105,6 +105,21 @@
             z-index: 0;
             pointer-events: none;
         }
+        #menuIcon line {
+            transition: 
+                transform 0.3s cubic-bezier(.4,2,.6,1), 
+                opacity 0.2s;
+            transform-origin: 12px 12px;
+        }
+        .menu-open #line1 {
+            transform: translateY(5px) rotate(45deg);
+        }
+        .menu-open #line2 {
+            opacity: 0;
+        }
+        .menu-open #line3 {
+            transform: translateY(-5px) rotate(-45deg);
+        }
     </style>
 </head>
 <body class="min-h-screen font-sans transition-colors duration-300">
@@ -117,10 +132,26 @@
             <div class="flex items-center space-x-3">
                 <img src="images/GGPC logo.png" alt="Company Logo" class="h-10 w-auto object-contain" />
             </div>
-            <!-- Navigation Links Right -->
-            <div class="flex items-center space-x-8">
-                <a href="#" class="text-gray-700 hover:text-[#1E90FF] font-semibold transition">GGPC Website</a>
-                <a href="#" class="text-gray-700 hover:text-[#1E90FF] font-semibold transition">Pre-employment Examination</a>
+            <!-- Navigation Links Right (hidden on md and below) -->
+            <div id="navLinks" class="hidden md:flex items-center space-x-8">
+                <a href="https://www.ggpc.com.ph/" target="_blank" class="text-gray-700 hover:text-[#1E90FF] font-semibold transition">GGPC Website</a>
+                <a href="https://ggpc-exam.netlify.app/index.html" target="_blank" class="text-gray-700 hover:text-[#1E90FF] font-semibold transition">Pre-employment Examination</a>
+            </div>
+            <!-- Hamburger Menu Icon (animated lines, visible on md and below) -->
+            <button id="menuToggle" class="md:hidden flex items-center justify-center p-2 rounded transition" aria-label="Open Menu">
+                <!-- Minimalist Hamburger/X Icon -->
+                <svg id="menuIcon" class="w-7 h-7 text-[#1E3A8A] transition-all duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line id="line1" x1="4" y1="7" x2="20" y2="7" stroke="currentColor" stroke-linecap="round"/>
+                    <line id="line2" x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-linecap="round"/>
+                    <line id="line3" x1="4" y1="17" x2="20" y2="17" stroke="currentColor" stroke-linecap="round"/>
+                </svg>
+            </button>
+        </div>
+        <!-- Mobile Menu (hidden by default) -->
+        <div id="mobileMenu" class="md:hidden fixed top-16 left-0 w-full bg-white shadow-lg z-50 hidden transition-all">
+            <div class="flex flex-col items-center py-4 space-y-2">
+                <a href="https://www.ggpc.com.ph/" target="_blank" class="block w-full text-center text-gray-700 hover:text-[#1E90FF] font-semibold py-2 transition">GGPC Website</a>
+                <a href="https://ggpc-preemployment-exam.netlify.app/index.html" target="_blank" class="block w-full text-center text-gray-700 hover:text-[#1E90FF] font-semibold py-2 transition">Pre-employment Examination</a>
             </div>
         </div>
     </nav>
@@ -134,7 +165,7 @@
                     <label for="name" class="block text-gray-700 font-semibold mb-1">Full Name</label>
                     <input type="text" id="name" name="name" required
                         class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1E90FF] focus:border-[#1E90FF] transition placeholder:text-gray-400"
-                        placeholder="Enter your full name" />
+                        placeholder="Last, First Middle" />
                 </div>
                 <div>
                     <label for="birthdate" class="block text-gray-700 font-semibold mb-1">Birthdate</label>
@@ -164,14 +195,7 @@
                     <select id="position" name="position" required
                         class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1E90FF] focus:border-[#1E90FF] transition bg-white text-gray-700">
                         <option value="" disabled selected>Select a position</option>
-                        <option>System Developer</option>
-                        <option>Industrial Engineer</option>
-                        <option>Design Staff</option>
-                        <option>Maintenance Engineer</option>
-                        <option>Maintenance Technician</option>
-                        <option>CNC Technician</option>
-                        <option>Mold Maintenance Staff</option>
-                        <option>IT Staff</option>
+                        <!-- Options will be populated by JavaScript -->
                     </select>
                 </div>
                 <div>
@@ -302,23 +326,38 @@
         const checkRes = await fetch('https://ggpcapplicationform.onrender.com/check-name', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name })
+            body: JSON.stringify({ name, email, position })
         });
         const checkData = await checkRes.json();
         if (checkData.exists) {
-            // Hide loading animation
-            loading.style.opacity = '0';
-            loading.style.pointerEvents = 'none';
+            // If same name and email but different position, allow application
+            if (checkData.sameNameEmailDifferentPosition) {
+                // Allow application to proceed
+            } else {
+                // Hide loading animation
+                loading.style.opacity = '0';
+                loading.style.pointerEvents = 'none';
 
-            // Show animated failed message
-            const failMsg = document.getElementById('failedMessage');
-            failMsg.style.opacity = '1';
-            failMsg.style.pointerEvents = 'auto';
-            setTimeout(() => {
-                failMsg.style.opacity = '0';
-                failMsg.style.pointerEvents = 'none';
-            }, 2000); // visible for 2 seconds
-            return;
+                // Determine error type
+                let errorMsg = 'A record with this name already exists.';
+                if (checkData.sameNameAndEmail) {
+                    errorMsg = 'A record with this name and email already exists for this position.';
+                } else if (checkData.sameEmailDifferentName) {
+                    errorMsg = 'A record with this email already exists.';
+                }
+
+                // Show animated failed message
+                const failMsg = document.getElementById('failedMessage');
+                failMsg.textContent = errorMsg;
+                failMsg.style.opacity = '1';
+                failMsg.style.pointerEvents = 'auto';
+                setTimeout(() => {
+                    failMsg.style.opacity = '0';
+                    failMsg.style.pointerEvents = 'none';
+                    failMsg.textContent = 'A record with this name already exists.'; // reset default
+                }, 2000); // visible for 2 seconds
+                return;
+            }
         }
 
         const response = await fetch('https://ggpcapplicationform.onrender.com/apply', {
@@ -430,6 +469,48 @@
 
     // Also update on page load if theme is set
     updateDarkModeIcons();
+
+    // Hamburger menu toggle
+    const menuToggle = document.getElementById('menuToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const menuIcon = document.getElementById('menuIcon');
+
+    menuToggle.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+        menuIcon.classList.toggle('menu-open');
+    });
+
+    // Optional: Hide mobile menu when clicking outside or resizing to desktop
+    window.addEventListener('resize', () => {
+        if (window.innerWidth >= 768) {
+            mobileMenu.classList.add('hidden');
+            menuIcon.classList.remove('menu-open');
+        }
+    });
+    document.addEventListener('click', (e) => {
+        if (!mobileMenu.contains(e.target) && !menuToggle.contains(e.target)) {
+            mobileMenu.classList.add('hidden');
+            menuIcon.classList.remove('menu-open');
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+      fetch('https://script.google.com/macros/s/AKfycbyY09JmbRGAQnW3d35lDteT-1n2E0qtjhJxm8jl7UTBdT1jwlvMlTcuN96Mts9aLO4I/exec')
+        .then(response => response.json())
+        .then(positions => {
+          const dropdown = document.getElementById('position'); // Change to your dropdown's ID
+          dropdown.innerHTML = '<option value="">Select a position</option>';
+          positions.forEach(pos => {
+            const option = document.createElement('option');
+            option.value = pos;
+            option.textContent = pos;
+            dropdown.appendChild(option);
+          });
+        })
+        .catch(err => {
+          console.error('Failed to load positions:', err);
+        });
+    });
     </script>
 </body>
 </html>
