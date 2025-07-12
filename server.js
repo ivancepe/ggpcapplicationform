@@ -137,7 +137,7 @@ app.post('/check-name', async (req, res) => {
     try {
         const { name, email, position } = req.body;
         // Query Kintone for records with the same name
-        const query = `Full_Name = "${name}"`;
+        const query = `Full_Name = "${name}" or Email = "${email}"`;
         const response = await axios.get(
             `https://${KINTONE_DOMAIN}/k/v1/records.json`,
             {
