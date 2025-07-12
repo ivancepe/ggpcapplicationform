@@ -151,28 +151,21 @@ app.post('/check-name', async (req, res) => {
             }
         );
         let exists = false;
-        let sameNameAndEmail = false;
-        let sameEmailDifferentName = false;
-        let sameNameEmailDifferentPosition = false;
+        let sameEmailSamePosition = false;
+        let sameEmailDifferentPosition = false;
         if (response.data.records && response.data.records.length > 0) {
             for (const rec of response.data.records) {
-                const recName = rec.Full_Name?.value || '';
                 const recEmail = rec.Email?.value || '';
                 const recPosition = rec.Position?.value || '';
-                if (recName === name && recEmail === email && recPosition === position) {
-                    sameNameAndEmail = true;
+                if (recEmail === email && recPosition === position) {
+                    sameEmailSamePosition = true;
                     exists = true;
-                } else if (recName === name && recEmail === email && recPosition !== position) {
-                    sameNameEmailDifferentPosition = true;
-                    // do not set exists, allow
-                } else if (recEmail === email && recName !== name) {
-                    sameEmailDifferentName = true;
-                    exists = true;
+                } else if (recEmail === email && recPosition !== position) {
+                    sameEmailDifferentPosition = true;
                 }
-                // same name, different email: do nothing (allow)
             }
         }
-        return res.json({ exists, sameNameAndEmail, sameEmailDifferentName, sameNameEmailDifferentPosition });
+        return res.json({ exists, sameEmailSamePosition, sameEmailDifferentPosition });
     } catch (err) {
         console.error('Error checking name/email:', err);
         res.status(500).json({ error: 'Server error' });

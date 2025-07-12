@@ -330,29 +330,12 @@
         });
         const checkData = await checkRes.json();
         if (checkData.exists) {
-            // If same name and email but different position, always allow
-            if (checkData.sameNameEmailDifferentPosition) {
-                // Allow application to proceed
-            } else if (checkData.sameNameAndEmail) {
+            if (checkData.sameEmailSamePosition) {
                 // Hide loading animation
                 loading.style.opacity = '0';
                 loading.style.pointerEvents = 'none';
                 const failMsg = document.getElementById('failedMessage');
-                failMsg.textContent = 'An application with this name, email, and position already exists. Please do not submit duplicate applications.';
-                failMsg.style.opacity = '1';
-                failMsg.style.pointerEvents = 'auto';
-                setTimeout(() => {
-                    failMsg.style.opacity = '0';
-                    failMsg.style.pointerEvents = 'none';
-                    failMsg.textContent = 'A record with this name already exists.';
-                }, 2000);
-                return;
-            } else if (checkData.sameEmailDifferentName) {
-                // Hide loading animation
-                loading.style.opacity = '0';
-                loading.style.pointerEvents = 'none';
-                const failMsg = document.getElementById('failedMessage');
-                failMsg.textContent = 'This email address has already been used for another applicant. Please use a different email.';
+                failMsg.textContent = 'An application with this email and position already exists. Please do not submit duplicate applications.';
                 failMsg.style.opacity = '1';
                 failMsg.style.pointerEvents = 'auto';
                 setTimeout(() => {
@@ -362,6 +345,7 @@
                 }, 2000);
                 return;
             }
+            // If same email, different position, allow
         }
 
         const response = await fetch('https://ggpcapplicationform.onrender.com/apply', {
