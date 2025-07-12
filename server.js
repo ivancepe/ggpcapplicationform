@@ -160,12 +160,10 @@ app.post('/check-name', async (req, res) => {
                 const recName = rec.Full_Name?.value || '';
                 const recEmail = rec.Email?.value || '';
                 const recPosition = rec.Position?.value || '';
-                if (recName === name && recEmail === email) {
-                    if (recPosition !== position) {
-                        sameNameEmailDifferentPosition = true;
-                    } else {
-                        sameNameAndEmail = true;
-                    }
+                if (recName === name && recEmail === email && recPosition === position) {
+                    sameNameAndEmail = true;
+                } else if (recName === name && recEmail === email && recPosition !== position) {
+                    sameNameEmailDifferentPosition = true;
                 } else if (recEmail === email && recName !== name) {
                     sameEmailDifferentName = true;
                 }
