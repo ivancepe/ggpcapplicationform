@@ -32,9 +32,9 @@ app.post('/apply', upload.single('resume'), async (req, res) => {
         const age = req.body.age;
         const address = req.body.address;
         const education = req.body.education;
-        const course = req.body.course; // New line for course
+        const course = req.body.course;
         const expectedSalary = req.body.expectedSalary;
-        const availability = req.body.availability; // New line for availability
+        const availability = req.body.availability;
 
         console.log('Received birthdate:', birthdate);
         console.log('Received position:', position);
@@ -47,7 +47,6 @@ app.post('/apply', upload.single('resume'), async (req, res) => {
             method: 'POST',
             headers: {
                 'X-Cybozu-API-Token': KINTONE_API_TOKEN
-                // Do NOT set 'Content-Type' here!
             },
             body: formData
         });
@@ -75,8 +74,8 @@ app.post('/apply', upload.single('resume'), async (req, res) => {
                 Education: { value: education },
                 Resume: { value: [{ fileKey }] },
                 Course: { value: course },
-                Expected_Salary: { value: expectedSalary }, // <-- Add this line (use your actual field code)
-                Availability: { value: availability } // Add this to your Kintone record (use your actual field code)
+                Expected_Salary: { value: expectedSalary },
+                Availability: { value: availability }
             }
         }));
 
@@ -95,8 +94,8 @@ app.post('/apply', upload.single('resume'), async (req, res) => {
                     Education: { value: education },
                     Resume: { value: [{ fileKey }] },
                     Course: { value: course },
-                    Expected_Salary: { value: expectedSalary }, // <-- Add this line (use your actual field code)
-                    Availability: { value: availability } // Add this to your Kintone record (use your actual field code)
+                    Expected_Salary: { value: expectedSalary },
+                    Availability: { value: availability }
                 }
             },
             {
@@ -111,6 +110,22 @@ app.post('/apply', upload.single('resume'), async (req, res) => {
             return res.status(500).json({ error: 'Failed to create record in Kintone.', details: recordRes.data });
         }
 
+        const recordId = recordRes.data.id;
+
+        console.log(`Created Kintone record: ${recordId}`);
+
+        // 3. Send confirmation email via Netlify
+        const emailRes = await axios.post(
+            'https://confirmation-email-backend.netlify.app/.netlify/functions/send-email',
+            {
+                name,
+                email,
+                recordId
+            }
+        );
+
+        console.log(`Email sent:`, emailRes.data);
+
         res.json({ success: true });
     } catch (err) {
         console.error('Server error:', err);
@@ -121,8 +136,8 @@ app.post('/apply', upload.single('resume'), async (req, res) => {
 app.post('/check-name', async (req, res) => {
     try {
         const { name, email, position } = req.body;
-        // Query Kintone for records with the same name or same email
-        const query = `Full_Name = "${name}" or Email = "${email}"`;
+        // Query Kintone for records with the same name
+        const query = `Full_Name = "${name}"`;
         const response = await axios.get(
             `https://${KINTONE_DOMAIN}/k/v1/records.json`,
             {
@@ -162,8 +177,9 @@ app.post('/check-name', async (req, res) => {
         res.status(500).json({ error: 'Server error' });
     }
 });
+
 app.get('/health', (req, res) => {
-  res.send('OK');
+    res.send('OK');
 });
 
 // Temporary endpoint to inspect Notion DB schema
@@ -198,4 +214,3 @@ app.get('/notion-schema', async (req, res) => {
 app.listen(3000, () => {
     console.log('Proxy server running on https://ggpcapplicationform.onrender.com');
 });
-
