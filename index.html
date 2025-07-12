@@ -338,12 +338,14 @@
                 loading.style.opacity = '0';
                 loading.style.pointerEvents = 'none';
 
-                // Determine error typee
-                let errorMsg = 'A record with this name already exists.';
+                // Determine error type
+                let errorMsg = 'Duplicate application detected.';
                 if (checkData.sameNameAndEmail) {
-                    errorMsg = 'A record with this name and email already exists for this position.';
+                    errorMsg = 'An application with this name, email, and position already exists. Please do not submit duplicate applications.';
                 } else if (checkData.sameEmailDifferentName) {
-                    errorMsg = 'A record with this email already exists.';
+                    errorMsg = 'This email address has already been used for another applicant. Please use a different email.';
+                } else {
+                    errorMsg = 'A record with this name already exists.';
                 }
 
                 // Show animated failed message

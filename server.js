@@ -164,11 +164,12 @@ app.post('/check-name', async (req, res) => {
                     exists = true;
                 } else if (recName === name && recEmail === email && recPosition !== position) {
                     sameNameEmailDifferentPosition = true;
-                    exists = true;
+                    // do not set exists, allow
                 } else if (recEmail === email && recName !== name) {
                     sameEmailDifferentName = true;
                     exists = true;
                 }
+                // same name, different email: do nothing (allow)
             }
         }
         return res.json({ exists, sameNameAndEmail, sameEmailDifferentName, sameNameEmailDifferentPosition });
