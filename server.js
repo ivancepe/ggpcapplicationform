@@ -155,18 +155,19 @@ app.post('/check-name', async (req, res) => {
         let sameEmailDifferentName = false;
         let sameNameEmailDifferentPosition = false;
         if (response.data.records && response.data.records.length > 0) {
-            exists = true;
             for (const rec of response.data.records) {
                 const recName = rec.Full_Name?.value || '';
                 const recEmail = rec.Email?.value || '';
                 const recPosition = rec.Position?.value || '';
                 if (recName === name && recEmail === email && recPosition === position) {
                     sameNameAndEmail = true;
-                    // If exact match, do not allow as different position
-                } else if (!sameNameAndEmail && recName === name && recEmail === email && recPosition !== position) {
+                    exists = true;
+                } else if (recName === name && recEmail === email && recPosition !== position) {
                     sameNameEmailDifferentPosition = true;
+                    exists = true;
                 } else if (recEmail === email && recName !== name) {
                     sameEmailDifferentName = true;
+                    exists = true;
                 }
             }
         }
