@@ -218,10 +218,10 @@ app.get('/get-jobs', async (req, res) => {
                         equals: 'Open' // And you have an option called 'Open'
                     }
                 },
-                // We sort by the "Posted Date" to show the newest jobs first
+                // We sort by the "Position Name" alphabetically
                 sorts: [
                     {
-                        property: 'Position Name', // Make sure you have a 'Posted Date' column
+                        property: 'Position Name', // 
                         direction: 'ascending'
                     }
                 ]
@@ -238,7 +238,7 @@ app.get('/get-jobs', async (req, res) => {
         // Extract the job titles from Notion's response
         const jobs = response.data.results.map(page => {
             // Assumes your job title column is named 'Job Title'
-            return page.properties['Job Title']?.title[0]?.plain_text;
+            return page.properties['Position Name']?.title[0]?.plain_text;
         }).filter(Boolean); // Filter out any empty results
 
         res.json(jobs);
