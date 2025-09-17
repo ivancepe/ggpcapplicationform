@@ -213,7 +213,7 @@ app.get('/get-jobs', async (req, res) => {
             {
                 // We add a filter to only get pages where the "Status" is "Open"
                 filter: {
-                    property: 'Status', // Make sure you have a 'Status' column in Notion
+                    property: 'Employment Status', // Make sure you have a 'Status' column in Notion
                     select: {
                         equals: 'Open' // And you have an option called 'Open'
                     }
