@@ -205,6 +205,50 @@ app.get('/notion-schema', async (req, res) => {
     }
 });
 
+// New endpoint to get job positions from Notion
+app.get('/get-jobs', async (req, res) => {
+    try {
+        const response = await axios.post(
+            `https://api.notion.com/v1/databases/${NOTION_DB_ID}/query`,
+            {
+                // We add a filter to only get pages where the "Status" is "Open"
+                filter: {
+                    property: 'Status', // Make sure you have a 'Status' column in Notion
+                    select: {
+                        equals: 'Open' // And you have an option called 'Open'
+                    }
+                },
+                // We sort by the "Posted Date" to show the newest jobs first
+                sorts: [
+                    {
+                        property: 'Posted Date', // Make sure you have a 'Posted Date' column
+                        direction: 'descending'
+                    }
+                ]
+            },
+            {
+                headers: {
+                    'Authorization': `Bearer ${NOTION_TOKEN}`,
+                    'Notion-Version': '2022-06-28',
+                    'Content-Type': 'application/json'
+                }
+            }
+        );
+
+        // Extract the job titles from Notion's response
+        const jobs = response.data.results.map(page => {
+            // Assumes your job title column is named 'Job Title'
+            return page.properties['Job Title']?.title[0]?.plain_text;
+        }).filter(Boolean); // Filter out any empty results
+
+        res.json(jobs);
+
+    } catch (err) {
+        console.error('Error fetching jobs from Notion:', err.response ? err.response.data : err.message);
+        res.status(500).json({ error: 'Failed to fetch jobs from Notion.' });
+    }
+});
+
 app.listen(3000, () => {
     console.log('Proxy server running on https://ggpcapplicationform.onrender.com');
 });

@@ -123,23 +123,17 @@
     </style>
 </head>
 <body class="min-h-screen font-sans transition-colors duration-300">
-    <!-- Floating Particles Background -->
     <canvas id="particles-bg"></canvas>
-    <!-- Navigation Bar -->
     <nav class="w-full bg-white shadow-md fixed top-0 left-0 z-40">
         <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-            <!-- Logo Left -->
             <div class="flex items-center space-x-3">
                 <img src="images/GGPC logo.png" alt="Company Logo" class="h-10 w-auto object-contain" />
             </div>
-            <!-- Navigation Links Right (hidden on md and below) -->
             <div id="navLinks" class="hidden md:flex items-center space-x-8">
                 <a href="https://www.ggpc.com.ph/" target="_blank" class="text-gray-700 hover:text-[#1E90FF] font-semibold transition">GGPC Website</a>
                 <a href="https://ggpc-exam.netlify.app/index.html" target="_blank" class="text-gray-700 hover:text-[#1E90FF] font-semibold transition">Pre-employment Examination</a>
             </div>
-            <!-- Hamburger Menu Icon (animated lines, visible on md and below) -->
             <button id="menuToggle" class="md:hidden flex items-center justify-center p-2 rounded transition" aria-label="Open Menu">
-                <!-- Minimalist Hamburger/X Icon -->
                 <svg id="menuIcon" class="w-7 h-7 text-[#1E3A8A] transition-all duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <line id="line1" x1="4" y1="7" x2="20" y2="7" stroke="currentColor" stroke-linecap="round"/>
                     <line id="line2" x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-linecap="round"/>
@@ -147,7 +141,6 @@
                 </svg>
             </button>
         </div>
-        <!-- Mobile Menu (hidden by default) -->
         <div id="mobileMenu" class="md:hidden fixed top-16 left-0 w-full bg-white shadow-lg z-50 hidden transition-all">
             <div class="flex flex-col items-center py-4 space-y-2">
                 <a href="https://www.ggpc.com.ph/" target="_blank" class="block w-full text-center text-gray-700 hover:text-[#1E90FF] font-semibold py-2 transition">GGPC Website</a>
@@ -156,7 +149,6 @@
         </div>
     </nav>
     <div class="flex flex-col h-screen w-full pt-16">
-        <!-- Left: Form (now full width on desktop) -->
         <div class="w-full h-screen flex flex-col items-center justify-start form-scroll pt-2 lg:pt-4 overflow-y-auto">
             <form id="applicationForm" class="w-full max-w-3xl backdrop-blur-lg p-8 rounded-2xl shadow-xl border border-gray-200 space-y-6">
                 <h2 class="text-3xl font-bold text-center mb-4 tracking-tight">Application Form</h2>
@@ -195,8 +187,7 @@
                     <select id="position" name="position" required
                         class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1E90FF] focus:border-[#1E90FF] transition bg-white text-gray-700">
                         <option value="" disabled selected>Select a position</option>
-                        <!-- Options will be populated by JavaScript -->
-                    </select>
+                        </select>
                 </div>
                 <div>
                     <label for="education" class="block text-gray-700 font-semibold mb-1">Educational Attainment</label>
@@ -242,14 +233,10 @@
             </form>
         </div>
     </div>
-    <!-- Success and Failed Messages -->
     <div id="successMessage" class="fixed top-8 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg text-lg font-semibold opacity-0 pointer-events-none transition-opacity duration-500 z-50">
         Application submitted successfully!
     </div>
-    <div id="failedMessage" class="fixed top-20 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg text-lg font-semibold opacity-0 pointer-events-none transition-opacity duration-500 z-50">
-        A record with this name already exists.
-    </div>
-    <!-- Fun Loading Animation -->
+    <div id="failedMessage" class="fixed top-20 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg text-lg font-semibold opacity-0 pointer-events-none transition-opacity duration-500 z-50"></div>
     <div id="loadingOverlay" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50 opacity-0 pointer-events-none transition-opacity duration-300">
         <div class="flex flex-col items-center">
             <div class="animate-spin rounded-full border-8 border-blue-400 border-t-transparent h-20 w-20 mb-4"></div>
@@ -336,12 +323,14 @@
                 loading.style.pointerEvents = 'none';
                 const failMsg = document.getElementById('failedMessage');
                 failMsg.textContent = 'An application with this email and position already exists. Please do not submit duplicate applications.';
+                failMsg.style.display = '';
                 failMsg.style.opacity = '1';
                 failMsg.style.pointerEvents = 'auto';
                 setTimeout(() => {
                     failMsg.style.opacity = '0';
                     failMsg.style.pointerEvents = 'none';
-                    failMsg.textContent = 'A record with this name already exists.';
+                    failMsg.textContent = '';
+                    failMsg.style.display = 'none';
                 }, 2000);
                 return;
             }
@@ -483,7 +472,7 @@
     });
 
     document.addEventListener('DOMContentLoaded', function() {
-      fetch('https://script.google.com/macros/s/AKfycbyY09JmbRGAQnW3d35lDteT-1n2E0qtjhJxm8jl7UTBdT1jwlvMlTcuN96Mts9aLO4I/exec')
+      fetch('https://ggpcapplicationform.onrender.com/get-jobs')
         .then(response => response.json())
         .then(positions => {
           const dropdown = document.getElementById('position'); // Change to your dropdown's ID
@@ -498,6 +487,7 @@
         .catch(err => {
           console.error('Failed to load positions:', err);
         });
+      document.getElementById('failedMessage').style.display = 'none';
     });
     </script>
 </body>
