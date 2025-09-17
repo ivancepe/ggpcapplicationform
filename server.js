@@ -221,8 +221,8 @@ app.get('/get-jobs', async (req, res) => {
                 // We sort by the "Posted Date" to show the newest jobs first
                 sorts: [
                     {
-                        property: 'Posted Date', // Make sure you have a 'Posted Date' column
-                        direction: 'descending'
+                        property: 'Job Title', // Make sure you have a 'Posted Date' column
+                        direction: 'ascending'
                     }
                 ]
             },
