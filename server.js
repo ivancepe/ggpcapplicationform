@@ -206,13 +206,8 @@ app.get('/notion-schema', async (req, res) => {
         });
     }
 });
-
-// New endpoint to get job positions from Notion
-// Updated endpoint to get job positions from Kintone
 app.get('/get-jobs', async (req, res) => {
     try {
-        // Build the Kintone query string
-        // Filtering by 'Open' status and sorting alphabetically by Job_Name
         const kintoneQuery = 'Employment_Status = "Open" order by Job_Name asc';
 
         const response = await axios.get(
@@ -220,9 +215,8 @@ app.get('/get-jobs', async (req, res) => {
             {
                 params: {
                     app: KINTONE_JOBS_APP_ID,
-                    query: kintoneQuery,
-                    // Good practice: Only fetch the field we need to reduce payload size
-                    fields: ['Job_Name'] 
+                    query: kintoneQuery
+                    // Removed 'fields' array to prevent Axios serialization conflicts with Kintone
                 },
                 headers: {
                     'X-Cybozu-API-Token': KINTONE_JOBS_API_TOKEN
@@ -230,20 +224,18 @@ app.get('/get-jobs', async (req, res) => {
             }
         );
 
-        // Map the Kintone records down to a simple array of strings
-        // Kintone data structures nest the actual string inside a '.value' property
         const jobs = response.data.records
             .map(record => record.Job_Name?.value)
-            .filter(Boolean); // Filter out any undefined or empty strings
+            .filter(Boolean);
 
         res.json(jobs);
 
     } catch (err) {
-        console.error('Error fetching jobs from Kintone:', err.response?.data || err.message);
+        // This will print the EXACT error from Kintone into your Render console if it fails again
+        console.error('Kintone API Error:', err.response?.data || err.message);
         res.status(500).json({ error: 'Failed to fetch jobs from Kintone.' });
     }
 });
-
 app.listen(3000, () => {
     console.log('Proxy server running on https://ggpcapplicationform.onrender.com');
 });
