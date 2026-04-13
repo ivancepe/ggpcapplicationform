@@ -9,12 +9,14 @@ const app = express();
 const upload = multer();
 
 const KINTONE_DOMAIN = 'vez7o26y38rb.cybozu.com';
+
+// Variables for the Applicant Tracking App
 const KINTONE_API_TOKEN = 'SNjXj0CGity20DNSsiJgImu2fj0WIEWyeHvVbyHe';
 const KINTONE_APP_ID = '1586';
 
-// Notion integration token and database ID
-const NOTION_TOKEN = 'ntn_WA6421894517rRDIKWaOMPKuThVcFADzI6BscA5lDmc5H1';
-const NOTION_DB_ID = '11202647088b806b9d7dc3836f8aa335'; // or '11202647-088b-806b-9d7d-c3836f8aa335'
+// Variables for the Job Opportunities App
+const KINTONE_JOBS_API_TOKEN = 'IJ4OZHqPT10iV14EDXGR3Od1wSttTl44jP3ya0ea'; 
+const KINTONE_JOBS_APP_ID = '1774'; 
 
 app.use(cors({
     origin: 'https://ggpcapplicationform.netlify.app'
@@ -206,46 +208,39 @@ app.get('/notion-schema', async (req, res) => {
 });
 
 // New endpoint to get job positions from Notion
+// Updated endpoint to get job positions from Kintone
 app.get('/get-jobs', async (req, res) => {
     try {
-        const response = await axios.post(
-            `https://api.notion.com/v1/databases/${NOTION_DB_ID}/query`,
+        // Build the Kintone query string
+        // Filtering by 'Open' status and sorting alphabetically by Job_Name
+        const kintoneQuery = 'Employment_Status = "Open" order by Job_Name asc';
+
+        const response = await axios.get(
+            `https://${KINTONE_DOMAIN}/k/v1/records.json`,
             {
-                // We add a filter to only get pages where the "Status" is "Open"
-                filter: {
-                    property: 'Employment Status', // Make sure you have a 'Status' column in Notion
-                    select: {
-                        equals: 'Open' // And you have an option called 'Open'
-                    }
+                params: {
+                    app: KINTONE_JOBS_APP_ID,
+                    query: kintoneQuery,
+                    // Good practice: Only fetch the field we need to reduce payload size
+                    fields: ['Job_Name'] 
                 },
-                // We sort by the "Position Name" alphabetically
-                sorts: [
-                    {
-                        property: 'Position Name', // 
-                        direction: 'ascending'
-                    }
-                ]
-            },
-            {
                 headers: {
-                    'Authorization': `Bearer ${NOTION_TOKEN}`,
-                    'Notion-Version': '2022-06-28',
-                    'Content-Type': 'application/json'
+                    'X-Cybozu-API-Token': KINTONE_JOBS_API_TOKEN
                 }
             }
         );
 
-        // Extract the job titles from Notion's response
-        const jobs = response.data.results.map(page => {
-            // Assumes your job title column is named 'Job Title'
-            return page.properties['Position Name']?.title[0]?.plain_text;
-        }).filter(Boolean); // Filter out any empty results
+        // Map the Kintone records down to a simple array of strings
+        // Kintone data structures nest the actual string inside a '.value' property
+        const jobs = response.data.records
+            .map(record => record.Job_Name?.value)
+            .filter(Boolean); // Filter out any undefined or empty strings
 
         res.json(jobs);
 
     } catch (err) {
-        console.error('Error fetching jobs from Notion:', err.response ? err.response.data : err.message);
-        res.status(500).json({ error: 'Failed to fetch jobs from Notion.' });
+        console.error('Error fetching jobs from Kintone:', err.response?.data || err.message);
+        res.status(500).json({ error: 'Failed to fetch jobs from Kintone.' });
     }
 });
 
