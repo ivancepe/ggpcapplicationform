@@ -208,7 +208,8 @@ app.get('/notion-schema', async (req, res) => {
 });
 app.get('/get-jobs', async (req, res) => {
     try {
-        const kintoneQuery = 'Employment_Status = "Open" order by Job_Name asc';
+
+    const kintoneQuery = 'Employment_Status in ("Open") order by Job_Name asc';
 
         const response = await axios.get(
             `https://${KINTONE_DOMAIN}/k/v1/records.json`,
